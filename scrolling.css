@@ -10,11 +10,11 @@
 	user-select: none;
 }
 
-.scrolling-element[scrolling-overflow-x='scroll']:not([scrolling-persistent='false']) {
+.scrolling-element[scrolling-x-visible='true']:not([scrolling-persistent='false']) {
 	padding-bottom: 16px;
 }
 
-.scrolling-element[scrolling-overflow-y='scroll']:not([scrolling-persistent='false']) {
+.scrolling-element[scrolling-y-visible='true']:not([scrolling-persistent='false']) {
 	padding-right: 16px;
 }
 

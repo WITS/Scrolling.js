@@ -15,7 +15,15 @@ Scrolling.prototype.initialize = function(elem) {
 		} else if (elem instanceof Element) { // Element
 			if (elem.getAttribute(Scrolling.prefix + "initialized")) return;
 			var overflowX = elem.getAttribute(Scrolling.prefix + "overflow-x");
+			if (!overflowX) {
+				overflowX = "auto";
+				elem.setAttribute(Scrolling.prefix + "overflow-x", overflowX);
+			}
 			var overflowY = elem.getAttribute(Scrolling.prefix + "overflow-y");
+			if (!overflowY) {
+				overflowY = "auto";
+				elem.setAttribute(Scrolling.prefix + "overflow-y", overflowY);
+			}
 			if (Scrolling.isMobile) {
 				if (overflowX) elem.style.overflowX = overflowX;
 				if (overflowY) elem.style.overflowY = overflowY;
@@ -106,6 +114,17 @@ Scrolling.prototype.update = function(elem) {
 			var overflowY = elem.getAttribute(Scrolling.prefix + "overflow-y");
 			var scrollXVisible = (overflowX == "scroll");
 			var scrollYVisible = (overflowY == "scroll");
+			if (overflowX == "auto" || overflowY == "auto") {
+				box = elem.getBoundingClientRect();
+				if (overflowX == "auto" && box.width < elem.scrollWidth) {
+					scrollXVisible = true;
+				}
+				if (overflowY == "auto" && box.height < elem.scrollHeight) {
+					scrollYVisible = true;
+				}
+			}
+			elem.setAttribute(Scrolling.prefix + "x-visible", scrollXVisible);
+			elem.setAttribute(Scrolling.prefix + "y-visible", scrollYVisible);
 			// Set track style
 			elem.scrollTrackX.setAttribute("data-visible", scrollXVisible);
 			elem.scrollTrackY.setAttribute("data-visible", scrollYVisible);
@@ -120,9 +139,11 @@ Scrolling.prototype.update = function(elem) {
 			var box = elem.getBoundingClientRect();
 			elem.scrollingWidth = box.width;
 			elem.scrollingHeight = box.height;
-			elem.scrollBarX.style.width = (100 * box.width /
+			var p_offset = 12 * (elem.getAttribute(
+				Scrolling.prefix + "persistent") == "false");
+			elem.scrollBarX.style.width = (100 * (box.width + p_offset) /
 				elem.scrollWidth) + "%";
-			elem.scrollBarY.style.height = (100 * box.height /
+			elem.scrollBarY.style.height = (100 * (box.height + p_offset) /
 				elem.scrollHeight) + "%";
 		}
 	} else {
