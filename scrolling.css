@@ -2,6 +2,14 @@
 	position: relative;
 }
 
+.scrolling-element[scrolling-part-held] {
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 .scrolling-element[scrolling-overflow-x='scroll']:not([scrolling-persistent='false']) {
 	padding-bottom: 16px;
 }
@@ -23,6 +31,19 @@
 .scrolling-track-x:not([data-visible='true']),
 .scrolling-track-y:not([data-visible='true']) {
 	display: none;
+}
+
+.scrolling-element[scrolling-persistent='false'] .scrolling-track-x,
+.scrolling-element[scrolling-persistent='false'] .scrolling-track-y {
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+.scrolling-element[scrolling-persistent='false']:hover .scrolling-track-x,
+.scrolling-element[scrolling-persistent='false']:hover .scrolling-track-y,
+.scrolling-element[scrolling-persistent='false'][scrolling-part-held] .scrolling-track-x,
+.scrolling-element[scrolling-persistent='false'][scrolling-part-held] .scrolling-track-y {
+	opacity: 1;
 }
 
 .scrolling-track-x {

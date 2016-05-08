@@ -1,6 +1,4 @@
-Scrolling = function() {
-
-}
+Scrolling = function() {}
 
 Scrolling.prototype.prefix = "scrolling-";
 Scrolling.prototype.isMobile = /(iPhone|iPod|iPad|Android|BlackBerry)/i.test(
@@ -32,8 +30,12 @@ Scrolling.prototype.initialize = function(elem) {
 				elem.addEventListener("wheel", function(event) {
 					var xVisible = elem.scrollTrackX.getAttribute("data-visible");
 					var yVisible = elem.scrollTrackY.getAttribute("data-visible");
-					if (xVisible == "true") elem.scrollLeft += event.deltaX;
-					if (yVisible == "true") elem.scrollTop += event.deltaY;
+					var dX = event.deltaX;
+					var dY = event.deltaY;
+					if (dX != 0 && Math.abs(dX) <= 3) dX = dX / Math.abs(dX) * 120;
+					if (dY != 0 && Math.abs(dY) <= 3) dY = dY / Math.abs(dY) * 120;
+					if (xVisible == "true") elem.scrollLeft += dX;
+					if (yVisible == "true") elem.scrollTop += dY;
 				});
 				// Scrollbar track
 				var trackX = elem.scrollTrackX = document.createElement("div");
@@ -76,6 +78,7 @@ Scrolling.prototype.initialize = function(elem) {
 						// TODO: Track stuff
 					}
 					target.setAttribute(Scrolling.prefix + "held", true);
+					elem.setAttribute(Scrolling.prefix + "part-held", true);
 				});
 			}
 			elem.setAttribute(Scrolling.prefix + "initialized", true);
@@ -117,17 +120,10 @@ Scrolling.prototype.update = function(elem) {
 			var box = elem.getBoundingClientRect();
 			elem.scrollingWidth = box.width;
 			elem.scrollingHeight = box.height;
-			// if (scrollXVisible && scrollYVisible) {
-			// 	elem.scrollBarX.style.width = "calc(" + (100 * box.width /
-			// 		elem.scrollWidth) + "% - 10px)";
-			// 	elem.scrollBarY.style.height = "calc(" + (100 * box.height /
-			// 		elem.scrollHeight) + "% - 10px)";
-			// } else {
-				elem.scrollBarX.style.width = (100 * box.width /
-					elem.scrollWidth) + "%";
-				elem.scrollBarY.style.height = (100 * box.height /
-					elem.scrollHeight) + "%";
-			// }
+			elem.scrollBarX.style.width = (100 * box.width /
+				elem.scrollWidth) + "%";
+			elem.scrollBarY.style.height = (100 * box.height /
+				elem.scrollHeight) + "%";
 		}
 	} else {
 		var elems = document.querySelectorAll(elem ? elem :
@@ -184,9 +180,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	// End Scroll
 	var endScroll = function() {
-		var elems = document.querySelectorAll("[" + Scrolling.prefix + "held]");
+		var elems = document.querySelectorAll("[" + Scrolling.prefix + "held],[" +
+			Scrolling.prefix + "part-held]");
 		for (var i = elems.length; i --; ) {
 			elems[i].removeAttribute(Scrolling.prefix + "held");
+			elems[i].removeAttribute(Scrolling.prefix + "part-held");
 		}
 	};
 	window.addEventListener("mouseup", endScroll, true);
