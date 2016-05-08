@@ -68,10 +68,9 @@ Scrolling.prototype.initialize = function(elem) {
 				elem.addEventListener("mousedown", function(event) {
 					var target = event.target;
 					if (target.className.indexOf(Scrolling.prefix +
-						"component ") === -1) {
+						"component ") !== 0) {
 						return;
 					}
-					console.log(target);
 					var which = target.className[target.className.length - 1];
 					if (/bar-[xy]$/.test(target.className)) {
 						// Bar
@@ -89,7 +88,33 @@ Scrolling.prototype.initialize = function(elem) {
 					elem.setAttribute(Scrolling.prefix + "part-held", true);
 				});
 			}
+			// The element is initialized
 			elem.setAttribute(Scrolling.prefix + "initialized", true);
+			// Add a mutation observer to automatically update
+			// when this element changes
+			var observer = new MutationObserver(function(mutations) {
+				var nonScrollingMutation = false;
+				for (var i = mutations.length; i --; ) {
+					if (!mutations[i].target.className ||
+						(mutations[i].target.className.indexOf(Scrolling.prefix +
+						"component ") !== 0 && mutations[i].attributeName.indexOf(
+						Scrolling.prefix) !== 0)) {
+						nonScrollingMutation = true;
+						break;
+					}
+				}
+				if (!nonScrollingMutation) return;
+				// console.log(mutations);
+				// console.log(nonScrollingMutation);
+				console.log("Do it");
+				Scrolling.update(elem);
+			});
+			observer.observe(elem, {
+				childList: true,
+				attributes: true,
+				characterData: true,
+				subtree: true
+			});
 		}
 	} else {
 		var elems = document.querySelectorAll(elem ? elem :
