@@ -271,6 +271,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	// Make sure this works with media queries
 	window.addEventListener("resize", function() {
+		Scrolling.update();
 		Scrolling.onscroll();
 		Scrolling.update();
 	});
