@@ -1,0 +1,65 @@
+.scrolling-element {
+	position: relative;
+}
+
+.scrolling-element[scrolling-overflow-x='scroll']:not([scrolling-persistent='false']) {
+	padding-bottom: 16px;
+}
+
+.scrolling-element[scrolling-overflow-y='scroll']:not([scrolling-persistent='false']) {
+	padding-right: 16px;
+}
+
+.scrolling-component {
+	position: absolute;
+}
+
+.scrolling-track-x,
+.scrolling-track-y {
+	overflow: hidden;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.scrolling-track-x:not([data-visible='true']),
+.scrolling-track-y:not([data-visible='true']) {
+	display: none;
+}
+
+.scrolling-track-x {
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 12px;
+}
+
+.scrolling-track-x[data-both='true'] {
+	width: calc(100% - 12px);
+}
+
+.scrolling-track-y {
+	right: 0;
+	top: 0;
+	width: 12px;
+	height: 100%;
+}
+
+.scrolling-track-y[data-both='true'] {
+	height: calc(100% - 12px);
+}
+
+.scrolling-bar-x,
+.scrolling-bar-y {
+	background-color: rgba(0, 0, 0, 1);
+}
+
+.scrolling-bar-x {
+	left: 0;
+	bottom: 0;
+	height: 12px;
+}
+
+.scrolling-bar-y {
+	right: 0;
+	top: 0;
+	width: 12px;
+}
