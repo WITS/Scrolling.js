@@ -161,7 +161,11 @@ Scrolling.prototype.update = function(elem) {
 				elem.scrollTrackY.removeAttribute("data-both");
 			}
 			// Set bar style
+			elem.scrollTrackX.style.display = "none";
+			elem.scrollTrackY.style.display = "none";
 			var box = elem.getBoundingClientRect();
+			elem.scrollTrackX.style.display = "";
+			elem.scrollTrackY.style.display = "";
 			elem.scrollingWidth = box.width;
 			elem.scrollingHeight = box.height;
 			var p_offset = 12 * (elem.getAttribute(
@@ -181,16 +185,33 @@ Scrolling.prototype.update = function(elem) {
 }
 
 Scrolling.prototype.onscroll = function(elem) {
-	// Update track positions
-	elem.scrollTrackX.style.left = elem.scrollLeft + "px";
-	elem.scrollTrackY.style.right = (-elem.scrollLeft) + "px";
-	elem.scrollTrackY.style.top = elem.scrollTop + "px";
-	elem.scrollTrackX.style.bottom = (-elem.scrollTop) + "px";
-	// Update bar positions
-	elem.scrollBarX.style.left = (100 * elem.scrollLeft / (
-		elem.scrollWidth)) + "%";
-	elem.scrollBarY.style.top = (100 * elem.scrollTop / (
-		elem.scrollHeight)) + "%";
+	if (Scrolling.isMobile) return;
+	if (typeof elem === 'object') {
+		// Array-like
+		if (elem.length === 0 || (elem.length > 0 &&
+			(elem.length - 1) in elem)) {
+			for (var i = elem.length; i --; ) {
+				Scrolling.onscroll(elem[i]);
+			}
+		} else if (elem instanceof Element) { // Element
+			// Update track positions
+			elem.scrollTrackX.style.left = elem.scrollLeft + "px";
+			elem.scrollTrackY.style.right = (-elem.scrollLeft) + "px";
+			elem.scrollTrackY.style.top = elem.scrollTop + "px";
+			elem.scrollTrackX.style.bottom = (-elem.scrollTop) + "px";
+			// Update bar positions
+			elem.scrollBarX.style.left = (100 * elem.scrollLeft / (
+				elem.scrollWidth)) + "%";
+			elem.scrollBarY.style.top = (100 * elem.scrollTop / (
+				elem.scrollHeight)) + "%";
+		}
+	} else {
+		var elems = document.querySelectorAll(elem ? elem :
+			"." + Scrolling.prefix + "element");
+		for (var i = elems.length; i --; ) {
+			Scrolling.onscroll(elems[i]);
+		}
+	}
 }
 
 Scrolling = new Scrolling();
@@ -247,6 +268,11 @@ document.addEventListener("DOMContentLoaded", function() {
 		} else if (/track-[xy]$/.test(held.className)) {
 			
 		}
+	});
+	// Make sure this works with media queries
+	window.addEventListener("resize", function() {
+		Scrolling.onscroll();
+		Scrolling.update();
 	});
 	// End Scroll
 	var endScroll = function() {

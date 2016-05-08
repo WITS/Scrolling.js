@@ -76,6 +76,7 @@
 .scrolling-bar-x {
 	left: 0;
 	bottom: 0;
+	min-width: 24px;
 	height: 12px;
 }
 
@@ -83,4 +84,5 @@
 	right: 0;
 	top: 0;
 	width: 12px;
+	min-height: 24px;
 }
