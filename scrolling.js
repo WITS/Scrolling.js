@@ -3,6 +3,8 @@ Scrolling = function() {}
 Scrolling.prototype.prefix = "scrolling-";
 Scrolling.prototype.isMobile = /(iPhone|iPod|iPad|Android|BlackBerry)/i.test(
 	navigator.userAgent);
+Scrolling.prototype.mouseX = 0;
+Scrolling.prototype.mouseY = 0;
 
 Scrolling.prototype.initialize = function(elem) {
 	if (typeof elem === 'object') {
@@ -31,7 +33,8 @@ Scrolling.prototype.initialize = function(elem) {
 				elem.style.overflowX = "hidden";
 				elem.style.overflowY = "hidden";
 				// Positioning the tracks / bars
-				elem.addEventListener("scroll", function() {
+				elem.addEventListener("scroll", function(event) {
+					event.preventDefault();
 					Scrolling.onscroll(this);
 				});
 				// Scrolling w/ wheel
@@ -104,9 +107,6 @@ Scrolling.prototype.initialize = function(elem) {
 					}
 				}
 				if (!nonScrollingMutation) return;
-				// console.log(mutations);
-				// console.log(nonScrollingMutation);
-				console.log("Do it");
 				Scrolling.update(elem);
 			});
 			observer.observe(elem, {
@@ -202,7 +202,31 @@ document.addEventListener("DOMContentLoaded", function() {
 	if (Scrolling.isMobile) {
 		return;
 	}
+	window.addEventListener("wheel", function(event) {
+		// Make sure the user isn't scrolling on a different scrollable element
+		var elems = document.querySelectorAll(
+			"." + Scrolling.prefix + "element");
+		var mx = Scrolling.mouseX;
+		var my = Scrolling.mouseY;
+		for (var i = elems.length; i --; ) {
+			var elem = elems[i];
+			// If this element isn't currently scrollable, skip it
+			if (elem.getAttribute(Scrolling.prefix + "x-visible") !== "true" &&
+				elem.getAttribute(Scrolling.prefix + "y-visible") !== "true") {
+				continue;
+			}
+			// Check if the cursor is over this element
+			var box = elem.getBoundingClientRect();
+			if (mx >= box.left && mx <= box.left + box.width &&
+				my >= box.top && my <= box.top + box.height) {
+				event.preventDefault();
+				break;
+			}
+		}
+	});
 	window.addEventListener("mousemove", function(event) {
+		Scrolling.mouseX = event.clientX;
+		Scrolling.mouseY = event.clientY;
 		var held = document.querySelector("[" + Scrolling.prefix + "held]");
 		// No Scrolling components held
 		if (!held) return;
