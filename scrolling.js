@@ -100,8 +100,9 @@ Scrolling.prototype.initialize = function(elem) {
 				for (var i = mutations.length; i --; ) {
 					if (!mutations[i].target.className ||
 						(mutations[i].target.className.indexOf(Scrolling.prefix +
-						"component ") !== 0 && mutations[i].attributeName.indexOf(
-						Scrolling.prefix) !== 0)) {
+						"component ") !== 0 && mutations[i].attributeName &&
+						mutations[i].attributeName.indexOf(
+							Scrolling.prefix) !== 0)) {
 						nonScrollingMutation = true;
 						break;
 					}
