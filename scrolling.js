@@ -30,8 +30,10 @@ Scrolling.prototype.initialize = function(elem) {
 				if (overflowX) elem.style.overflowX = overflowX;
 				if (overflowY) elem.style.overflowY = overflowY;
 			} else {
-				elem.style.overflowX = "hidden";
-				elem.style.overflowY = "hidden";
+				elem.style.overflowX = overflowX === "visible" ?
+					"visible" : "hidden";
+				elem.style.overflowY = overflowY === "visible" ?
+					"visible" : "hidden";
 				// Positioning the tracks / bars
 				elem.addEventListener("scroll", function(event) {
 					event.preventDefault();
