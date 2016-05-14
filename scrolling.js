@@ -70,6 +70,8 @@ Scrolling.prototype.initialize = function(elem) {
 				// Scrolling with mouse buttons/movement
 				elem.addEventListener("mousedown", function(event) {
 					var target = event.target;
+					// If this is not an HTML Element, stop here
+					if (typeof target.className !== 'string') return;
 					if (target.className.indexOf(Scrolling.prefix +
 						"component ") !== 0) {
 						return;
